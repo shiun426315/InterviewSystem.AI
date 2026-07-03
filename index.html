@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>楊文萱 — AI 面試系統套件</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #F7F6F3;
+    --ink:       #1A1A2E;
+    --green:     #7B9E87;
+    --sand:      #D4C9B0;
+    --ink-light: #4A4A5E;
+    --green-dim: rgba(123,158,135,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout ── */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  section { padding: 96px 0; }
+  section + section { border-top: 1px solid var(--sand); }
+
+  /* ── HERO ── */
+  #hero {
+    padding: 120px 0 96px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 28px;
+  }
+
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 7vw, 80px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .hero-name-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    color: var(--ink-light);
+    margin-bottom: 48px;
+  }
+
+  .hero-tagline {
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--ink-light);
+    max-width: 480px;
+    line-height: 1.8;
+  }
+
+  /* Signature: 關鍵詞底線動畫 */
+  .hero-tagline .keyword {
+    position: relative;
+    color: var(--ink);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .hero-tagline .keyword::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1.5px;
+    background: var(--green);
+    transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hero-tagline .keyword.animated::after {
+    width: 100%;
+  }
+
+  .hero-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--sand);
+    margin: 56px 0;
+  }
+
+  .hero-bio {
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.9;
+    max-width: 520px;
+  }
+
+  .hero-bio strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ── SUITE INTRO ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--ink-light);
+    max-width: 560px;
+    line-height: 1.9;
+    margin-bottom: 56px;
+  }
+
+  /* ── Module Cards ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid var(--sand);
+    border-radius: 4px;
+    padding: 28px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+
+  .card:hover {
+    border-color: var(--green);
+    box-shadow: 0 4px 24px rgba(123,158,135,0.12);
+  }
+
+  .card-tag {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--green-dim);
+    padding: 3px 8px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 16px;
+    width: fit-content;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.8;
+    flex: 1;
+    margin-bottom: 24px;
+  }
+
+  .card-link {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+
+  .card-link:hover { color: var(--green); }
+
+  .card-link::after {
+    content: '→';
+    transition: transform 0.2s;
+  }
+
+  .card-link:hover::after { transform: translateX(3px); }
+
+  /* ── PROJECT C DEEP DIVE ── */
+  #projectc { background: white; }
+
+  .projectc-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 64px;
+    flex-wrap: wrap;
+  }
+
+  .projectc-badge {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: white;
+    background: var(--green);
+    padding: 4px 10px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .decisions {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .decision {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0 28px;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--sand);
+  }
+
+  .decision:first-child { border-top: 1px solid var(--sand); }
+
+  .decision-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--sand);
+    line-height: 1;
+    padding-top: 4px;
+    user-select: none;
+  }
+
+  .decision-content {}
+
+  .decision-q {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--green);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+  }
+
+  .decision-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  .decision-body {
+    font-size: 14px;
+    color: var(--ink-light);
+    line-height: 1.9;
+    max-width: 580px;
+  }
+
+  /* ── TECH TAGS ── */
+  #tech { padding: 64px 0; }
+
+  .tech-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 20px;
+  }
+
+  .ability-label {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 14px;
+  }
+
+  .ability-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 28px;
+  }
+
+  .ability-tag {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--green);
+    background: transparent;
+    border: 1px solid var(--green);
+    padding: 5px 14px;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+
+  .ability-tag:hover { background: var(--green-dim); }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    position: relative;
+    font-size: 12px;
+    color: var(--ink-light);
+    background: transparent;
+    border: 1px solid var(--sand);
+    padding: 5px 14px;
+    border-radius: 4px;
+    cursor: default;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .tag:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .tag .tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: white;
+    font-size: 11px;
+    line-height: 1.5;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .tag .tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--ink);
+  }
+
+  .tag:hover .tooltip { display: block; }
+
+  /* ── FOOTER ── */
+  #footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--sand);
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  .footer-note {
+    font-size: 12px;
+    color: var(--ink-light);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 680px) {
+    .cards { grid-template-columns: 1fr; }
+    .decision { grid-template-columns: 36px 1fr; gap: 0 16px; }
+    .decision-num { font-size: 28px; }
+    .projectc-header { flex-direction: column; }
+    section { padding: 64px 0; }
+    #hero { padding: 80px 0 64px; min-height: auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .keyword::after { transition: none; }
+    .card { transition: none; }
+    .card-link::after { transition: none; }
+    .reveal { opacity: 1; transform: none; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="container">
+    <p class="hero-eyebrow">作品集 · Portfolio</p>
+    <h1 class="hero-name">楊文萱</h1>
+    <p class="hero-name-en">WEN HSUAN YANG</p>
+    <p class="hero-tagline">
+      <span class="keyword" id="kw1">半導體 HR</span> × <span class="keyword" id="kw2">AI PM</span>，<br>
+      用產品思維解決人才流程問題
+    </p>
+    <div class="hero-divider"></div>
+    <p class="hero-bio">
+      曾在<strong>半導體業擔任 HR 三年半</strong>，親身經歷傳統面試流程的高人力成本與評估一致性問題。<br>
+      轉型為 <strong>AI PM</strong> 後，將這段經驗轉化為可落地的產品設計——<br>
+      從需求定義、系統架構到前後端實作，獨立完成一套服務 HR 全流程的 AI 面試系統。
+    </p>
+  </div>
+</section>
+
+<!-- ── SUITE INTRO ── -->
+<section id="suite">
+  <div class="container">
+    <p class="section-label reveal">個人專案</p>
+    <h2 class="section-title reveal">AI 面試系統套件</h2>
+    <p class="section-desc reveal">
+      以半導體 HR 從業者視角出發，設計並獨立實作一套涵蓋 HR 培訓、求職者練習、正式面試三大場景的 AI 語音面試系統。三個模組共用基礎建設，各自服務不同使用者角色。
+    </p>
+
+    <div class="cards">
+
+      <div class="card reveal">
+        <span class="card-tag">HR 培訓 · 內部</span>
+        <h3 class="card-title">InterviewCoach AI</h3>
+        <p class="card-desc">
+          讓 HR 新人透過 AI 雙角色示範與語音練習，建立結構化的面試問話能力，並由 AI 督導提供即時回饋。
+        </p>
+        <a class="card-link" href="https://shiun426315.github.io/InterviewCoachAI/" target="_blank" rel="noopener">查看專案</a>
+      </div>
+
+      <div class="card reveal">
+        <span class="card-tag">求職者練習 · 公開</span>
+        <h3 class="card-title">MockMate</h3>
+        <p class="card-desc">
+          開放外部求職者上傳履歷，與 AI 面試官進行語音模擬面試，結束後取得個人化的多面向回饋報告。
+        </p>
+        <a class="card-link" href="https://shiun426315.github.io/MockMate/" target="_blank" rel="noopener">查看專案</a>
+      </div>
+
+      <div class="card reveal">
+        <span class="card-tag">正式面試 · 授權</span>
+        <h3 class="card-title">AI HR.Interview</h3>
+        <p class="card-desc">
+          企業端部署的正式候選人面試系統，候選人透過授權連結完成 AI 語音面試，結果自動寫回 HR 後台。
+        </p>
+        <a class="card-link" href="https://shiun426315.github.io/AI-HR.Interview/" target="_blank" rel="noopener">查看專案</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECT C DEEP DIVE ── -->
+<section id="projectc">
+  <div class="container">
+
+    <div class="projectc-header">
+      <div class="reveal">
+        <span class="projectc-badge">旗艦模組</span>
+        <h2 class="section-title">AI HR.Interview<br>系統設計思維</h2>
+        <p class="section-desc" style="margin-bottom:0;">
+          面向半導體業的候選人端 AI 語音面試系統，將面試流程標準化，並自動產出結構化評估結果供 HR 與主管審核。以下是三個核心設計決策，每一個都來自 HR 實務的洞察。
+        </p>
+      </div>
+    </div>
+
+    <div class="decisions">
+
+      <div class="decision reveal">
+        <div class="decision-num">01</div>
+        <div class="decision-content">
+          <p class="decision-q">授權機制</p>
+          <h3 class="decision-title">JWT 專屬連結 + 到期機制，而非帳號註冊</h3>
+          <p class="decision-body">
+            針對特定候選人在面試階段產生專屬連結，並設有到期時間，確保連結僅在有效期內使用、避免濫用或轉發。候選人點擊即進入，體驗接近「收到面試通知、準時出現」的直覺，不增加任何額外操作負擔。
+          </p>
+        </div>
+      </div>
+
+      <div class="decision reveal">
+        <div class="decision-num">02</div>
+        <div class="decision-content">
+          <p class="decision-q">評估設計</p>
+          <h3 class="decision-title">多模態行為分析，而非單一維度評估</h3>
+          <p class="decision-body">
+            結合表情、聲學特徵、肢體姿態三個維度，並追蹤全程情緒走勢——例如在壓力題出現時候選人的反應變化。讓評估更接近真實面試官的綜合判斷，同時降低單一訊號的誤判風險。
+          </p>
+        </div>
+      </div>
+
+      <div class="decision reveal">
+        <div class="decision-num">03</div>
+        <div class="decision-content">
+          <p class="decision-q">協作流程</p>
+          <h3 class="decision-title">結果寫回後台 + 主管協作，而非寄送報告</h3>
+          <p class="decision-body">
+            面試結果自動寫回 HR 後台，HR 與主管皆可在同一平台查看候選人資訊與面試狀態。主管可直接在後台與 AI Recruiter 討論，決策在既有工作流程中完成，不需切換工具。
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── TECH TAGS ── -->
+<section id="tech">
+  <div class="container">
+    <p class="tech-label reveal">能力與技術</p>
+
+    <div class="reveal">
+      <p class="ability-label">核心能力</p>
+      <div class="ability-tags">
+        <span class="ability-tag">AI 產品設計</span>
+        <span class="ability-tag">語音互動體驗</span>
+        <span class="ability-tag">HR 流程數位化</span>
+        <span class="ability-tag">多模態行為分析</span>
+        <span class="ability-tag">使用者旅程設計</span>
+        <span class="ability-tag">跨角色系統規劃</span>
+      </div>
+
+      <p class="ability-label">技術實作</p>
+      <div class="tags">
+        <span class="tag">FastAPI<span class="tooltip">後端框架</span></span>
+        <span class="tag">Python<span class="tooltip">主要開發語言</span></span>
+        <span class="tag">Claude API<span class="tooltip">AI 對話與分析核心</span></span>
+        <span class="tag">Azure Speech STT/TTS<span class="tooltip">語音辨識與合成</span></span>
+        <span class="tag">MediaPipe<span class="tooltip">表情與肢體姿態偵測</span></span>
+        <span class="tag">JWT<span class="tooltip">候選人連結授權機制</span></span>
+        <span class="tag">Vanilla JavaScript<span class="tooltip">前端互動邏輯</span></span>
+        <span class="tag">Streamlit<span class="tooltip">HR 後台介面</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer id="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-name">楊文萱 · WEN HSUAN YANG</span>
+      <span class="footer-note">AI 面試系統套件 · 個人專案 · 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Signature animation：Hero 關鍵詞底線滑入
+  function animateKeywords() {
+    const kw1 = document.getElementById('kw1');
+    const kw2 = document.getElementById('kw2');
+    if (!kw1 || !kw2) return;
+    setTimeout(() => kw1.classList.add('animated'), 600);
+    setTimeout(() => kw2.classList.add('animated'), 1050);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', animateKeywords);
+  } else {
+    animateKeywords();
+  }
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
